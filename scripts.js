@@ -2,7 +2,7 @@
 // not able to chain together operations
 // display pushes previous operand to the left
 // too many decimals
-//right now call
+// unable to display anything as soon as you press the operator function
 class Calculator {
   constructor(previousOperandTextElement, currentOperandTextElement) {
     this.previousOperandTextElement = previousOperandTextElement;
@@ -13,7 +13,7 @@ class Calculator {
   clear() {
     this.previousOperand = "";
     this.currentOperand = "";
-    this.operation = undefined;
+    this.operation = null;
   }
 
   delete() {
@@ -38,6 +38,7 @@ class Calculator {
     let computation;
     let current = parseFloat(this.currentOperand);
     let previous = parseFloat(this.previousOperand);
+    if (isNaN(previous) || isNaN(current)) return;
     switch (this.operation) {
       case "÷":
         computation = previous / current;
@@ -54,9 +55,10 @@ class Calculator {
       default:
         return;
     }
-    this.currentOperand = computation;
-    this.operation = undefined;
+    this.currentOperand = computation.toString();
+    this.operation = null;
     this.previousOperand = "";
+    this.updateDisplay;
   }
 
   getDisplayNumber(number) {
@@ -65,13 +67,9 @@ class Calculator {
     let integerDigits = parseFloat(stringNumber.split(".")[0]);
     let decimalDigits = stringNumber.split(".")[1];
     let integerDisplay;
-    if (isNaN(integerDigits)) {
-      integerDisplay = ""; // problem here
-    } else {
-      integerDisplay = integerDigits.toLocaleString("en", {
-        maximumFractionDigits: 0,
-      });
-    }
+    integerDisplay = integerDigits.toLocaleString("en", {
+      maximumFractionDigits: 0,
+    });
     if (decimalDigits != null) {
       return `${integerDisplay}.${decimalDigits}`;
     } else {
@@ -82,9 +80,13 @@ class Calculator {
     this.currentOperandTextElement.innerText = this.getDisplayNumber(
       this.currentOperand
     );
-    if (this.operation != null) {
-      `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
-    } else this.previousOperandTextElement = "";
+    console.log(this.currentOperandTextElement);
+    console.log(this.previousOperandTextElement);
+    if (this.operation !== null) {
+      this.previousOperandTextElement.innerText = `${this.getDisplayNumber(
+        this.previousOperand
+      )} ${this.operation}`;
+    } else this.previousOperandTextElement.innerText = "";
   }
 }
 
